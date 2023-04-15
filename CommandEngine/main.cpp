@@ -11,6 +11,7 @@
 #include <sys/time.h>
 #include <ctime>
 #include <unistd.h>
+#include <csignal>
 #include "commands.h"
 #include "gait.h"
 
@@ -27,8 +28,15 @@ using namespace std;
 void commandInterpreter(uint8_t[], float);
 clock_t timer;
 GaitControl gaitController;
+bool keepRunning;
+
+void ctrl_c_handler(int signum) {
+  keepRunning = false;
+}
 
 int main() {
+  // Register signal for graceful shutdown
+  signal(SIGINT, ctrl_c_handler);
   gaitController.setSpeed(4);
   // Initialize driver
   int servoControllerFd = servoDriverInit(0);
@@ -71,8 +79,9 @@ int main() {
   float deltaTime = 0.0f;
   timer = clock();
   cout << "Loop starting...\n";
+  keepRunning = true;
 
-  while (1) {
+  while (keepRunning) {
     #ifndef TEST_MODE
     //printf("Listening at %d\n", server.sin_port);
 
@@ -115,6 +124,7 @@ int main() {
   #endif
   // Release i2c channel
   servoDriverDeInit(servoControllerFd);
+  cout << "User interrupt, shutting down...\n";
   return 0;
 }
 
