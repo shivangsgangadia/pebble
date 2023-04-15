@@ -21,13 +21,17 @@ Leg::Leg(uint8_t legNumber, float phaseAngleOffset) {
 
 
 void Leg::moveLegTo_Z(int angle) {
-    servoPositions[this->servoZIndex] = angle + this->strideLength + this->zOpenPos;
-    cout << "Z: " << (unsigned int)servoPositions[this->servoZIndex] << '\n';
+    uint8_t finalAngle = (angle + this->strideLength + this->zOpenPos);
+    // servoPositions[this->servoZIndex] = ((finalAngle % 180) + 180) % 180;
+    servoPositions[this->servoZIndex] = finalAngle;
+    // cout << "Z: " << (unsigned int)servoPositions[this->servoZIndex] << '\n';
 }
 
 
 void Leg::moveLegTo_X(int angle) {
-    servoPositions[this->servoXIndex] = angle + this->strideHeight + this->xOpenPos;
+    uint8_t finalAngle = angle + this->strideHeight + this->xOpenPos;
+    // servoPositions[this->servoXIndex] = ((finalAngle % 180) + 180) % 180;
+    servoPositions[this->servoXIndex] = finalAngle;
 }
 
 void Leg::moveByPhase(float deltaPhaseAngle, int incline) {
@@ -36,6 +40,7 @@ void Leg::moveByPhase(float deltaPhaseAngle, int incline) {
     float offsettedPhaseAngle = this->phaseAngle + this->phaseAngleOffset;
     // Normalize to prevent overflows
     offsettedPhaseAngle = fmodf(fmodf(offsettedPhaseAngle, TWO_PI) + TWO_PI, TWO_PI);
+    // cout << "Phase angle for leg: " << offsettedPhaseAngle << '\n';
     // Convert to degrees
     int zPos = this->strideLength * cos(offsettedPhaseAngle);
     int xPos = this->strideHeight * sin(offsettedPhaseAngle + ((M_PI / 4) * incline));
@@ -122,6 +127,7 @@ GaitControl::GaitControl() {
     for (int i = 0; i < LEG_COUNT; i++) {
         this->legs.push_back(Leg(i, (M_PI / 8) * i));
     }
+    this->setDirection(TRANSLATION_DIRECTION_FORWARD);
 }
 
 void GaitControl::setSpeed(int speed) {
@@ -133,11 +139,12 @@ int GaitControl::getSpeed() {
 }
 
 // 2pi * period * time
-void GaitControl::updateGait(unsigned int deltaTime) {
-    float deltaPhaseAngle = TWO_PI * ((1 / this->speed) * deltaTime) * this->translationDirection;
+void GaitControl::updateGait(float deltaTime) {
+    float deltaPhaseAngle = TWO_PI * (this->speed * deltaTime * 100) * this->translationDirection;
+    // cout << deltaPhaseAngle << '\n';
     for (int i = 0; i < LEG_COUNT; i++) {
         if (this->legs[i].isEnabled()) {
-            this->legs[i].moveByPhase(deltaPhaseAngle, incline);
+            this->legs[i].moveByPhase(deltaPhaseAngle, this->incline);
         }
     }
 }

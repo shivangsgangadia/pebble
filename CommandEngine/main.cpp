@@ -26,19 +26,21 @@ using namespace std;
 
 void commandInterpreter(uint8_t[], float);
 clock_t timer;
-float deltaTime;
 GaitControl gaitController;
 
 int main() {
   gaitController.setSpeed(4);
   // Initialize driver
   int servoControllerFd = servoDriverInit(0);
+  #ifndef TEST_MODE
   if (servoControllerFd < 0) {
     perror("Unable to init servo driver, exiting...");
     return 1;
   }
+  #endif
   servoDriverWriteCommands();
 
+  #ifndef TEST_MODE
   // Initialize UDP server
   int socketFileDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
   // Set timeout in case connection is broken mid command sequence
@@ -63,12 +65,15 @@ int main() {
     perror("Binding failed\n");
     return 0;
   }
+  #endif
 
-  int receivedBytesCount;
+  int receivedBytesCount = 0;
+  float deltaTime = 0.0f;
   timer = clock();
   cout << "Loop starting...\n";
 
   while (1) {
+    #ifndef TEST_MODE
     //printf("Listening at %d\n", server.sin_port);
 
     receivedBytesCount = recvfrom(
@@ -86,10 +91,16 @@ int main() {
     commandInterpreter(recvBuffer, deltaTime);
     // Clear the receive buffer
     memset(recvBuffer, 0, sizeof(uint8_t) * COMMAND_SIZE);
-
-
     
-    deltaTime = (clock() - timer) / CLOCKS_PER_SEC;
+    #else
+    // Put testing code here
+    gaitController.setDirection(TRANSLATION_DIRECTION_FORWARD);
+    gaitController.updateGait(deltaTime);
+    servoDriverWriteCommands();
+    usleep(200000);
+    #endif
+    
+    deltaTime = ((float)(clock() - timer)) / CLOCKS_PER_SEC;
     timer = clock();
     
 
@@ -99,7 +110,9 @@ int main() {
 
     // printf("%s\n", receivedByteString);
   }
+  #ifndef TEST_MODE
   close(socketFileDescriptor);
+  #endif
   // Release i2c channel
   servoDriverDeInit(servoControllerFd);
   return 0;

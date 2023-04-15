@@ -92,7 +92,7 @@ public:
      * Periodic function to be called once every game loop.
      * @param time is in seconds
      * */
-    void updateGait(unsigned int deltaTime);
+    void updateGait(float deltaTime);
     void setDirection(int direction);
     
     void openPebble();
