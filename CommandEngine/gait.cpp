@@ -22,7 +22,6 @@ Leg::Leg(uint8_t legNumber, float phaseAngleOffset) {
 
 void Leg::moveLegTo_Z(int angle) {
     uint8_t finalAngle = (angle + this->strideLength + this->zOpenPos);
-    // servoPositions[this->servoZIndex] = ((finalAngle % 180) + 180) % 180;
     servoPositions[this->servoZIndex] = finalAngle;
     // cout << "Z: " << (unsigned int)servoPositions[this->servoZIndex] << '\n';
 }
@@ -30,7 +29,6 @@ void Leg::moveLegTo_Z(int angle) {
 
 void Leg::moveLegTo_X(int angle) {
     uint8_t finalAngle = angle + this->strideHeight + this->xOpenPos;
-    // servoPositions[this->servoXIndex] = ((finalAngle % 180) + 180) % 180;
     servoPositions[this->servoXIndex] = finalAngle;
 }
 
@@ -140,7 +138,7 @@ int GaitControl::getSpeed() {
 
 // 2pi * period * time
 void GaitControl::updateGait(float deltaTime) {
-    float deltaPhaseAngle = TWO_PI * (this->speed * deltaTime * 100) * this->translationDirection;
+    float deltaPhaseAngle = TWO_PI * (this->speed * deltaTime * 10) * this->translationDirection;
     // cout << deltaPhaseAngle << '\n';
     for (int i = 0; i < LEG_COUNT; i++) {
         if (this->legs[i].isEnabled()) {

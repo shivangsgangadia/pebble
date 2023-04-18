@@ -201,14 +201,12 @@ void servoDriverWriteCommands() {
   for (int i = 0; i < SERVO_COUNT; i++) {
     uint16_t servoPwm = (((SG90_MAX - SG90_MIN) / (180 - 0)) * (unsigned int)servoPositions[i]) + SG90_MIN;
     //cout << (unsigned int)servoPositions[i] << '\t';
-    for (int j = 0; j < 4; j++) {
-      int index = j * 4 + 1;
-      toWrite[index] = 0;
-      toWrite[index + 1] = 0 >> 8;
-      toWrite[index + 2] = servoPwm;
-      toWrite[index + 3] = servoPwm >> 8;
-    }
-    cout << '\r' ;
+    int index = 1 + (i * 4);
+    toWrite[index] = 0;
+    toWrite[index + 1] = 0 >> 8;
+    toWrite[index + 2] = servoPwm;
+    toWrite[index + 3] = servoPwm >> 8;
+    // cout << '\r' ;
   }
   
 
@@ -484,7 +482,7 @@ void servoDriverWriteCommands() {
     uint16_t servoPwm = (((SG90_MAX - SG90_MIN) / (180 - 0)) * (unsigned int)servoPositions[i]) + SG90_MIN;
     cout << (unsigned int)servoPositions[i] << '\t';
     for (int j = 0; j < 4; j++) {
-      int index = j * 4 + 1;
+      int index = (j * 4) + 1 + (i * 16);
       toWrite[index] = 0;
       toWrite[index + 1] = 0 >> 8;
       toWrite[index + 2] = servoPwm;

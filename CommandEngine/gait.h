@@ -1,7 +1,6 @@
 #ifndef _GAIT_H
 #define _GAIT_H
 
-//#include "LegController.h"
 #include <vector>
 #include <cstdint>
 

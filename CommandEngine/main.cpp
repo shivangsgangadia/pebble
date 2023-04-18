@@ -37,7 +37,7 @@ void ctrl_c_handler(int signum) {
 int main() {
   // Register signal for graceful shutdown
   signal(SIGINT, ctrl_c_handler);
-  gaitController.setSpeed(4);
+  gaitController.setSpeed(1);
   // Initialize driver
   int servoControllerFd = servoDriverInit(0);
   #ifndef TEST_MODE
