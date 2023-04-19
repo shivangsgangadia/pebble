@@ -32,7 +32,7 @@ void Leg::moveLegTo_X(int angle) {
     servoPositions[this->servoXIndex] = finalAngle;
 }
 
-void Leg::moveByPhase(float deltaPhaseAngle, int incline) {
+void Leg::moveByPhase(float deltaPhaseAngle, float incline) {
     //this->phaseAngle += deltaPhaseAngle * this->strideDirection;
     this->phaseAngle += deltaPhaseAngle;
     float offsettedPhaseAngle = this->phaseAngle + this->phaseAngleOffset;
@@ -183,4 +183,40 @@ void GaitControl::closePebble() {
 
 void GaitControl::setDirection(int direction) {
     this->translationDirection = direction;
+}
+
+void GaitControl::incrementStrideHeight() {
+    for (int i = 0; i < LEG_COUNT; i++) {
+        this->legs[i].setStrideHeight(this->legs[i].getStrideHeight() + 1);
+    }
+}
+
+void GaitControl::decrementStrideHeight() {
+    for (int i = 0; i < LEG_COUNT; i++) {
+        this->legs[i].setStrideHeight(this->legs[i].getStrideHeight() - 1);
+    }
+}
+
+void GaitControl::incrementStrideLength() {
+    for (int i = 0; i < LEG_COUNT; i++) {
+        this->legs[i].setStrideLength(this->legs[i].getStrideLength() + 1);
+    }
+}
+
+void GaitControl::decrementStrideLength() {
+    for (int i = 0; i < LEG_COUNT; i++) {
+        this->legs[i].setStrideLength(this->legs[i].getStrideLength() - 1);
+    }
+}
+
+void GaitControl::incrementIncline() {
+    for (int i = 0; i < LEG_COUNT; i++) {
+        this->incline += 0.1;
+    }
+}
+
+void GaitControl::decrementIncline() {
+    for (int i = 0; i < LEG_COUNT; i++) {
+        this->incline -= 0.1;
+    }
 }

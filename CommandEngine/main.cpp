@@ -157,20 +157,28 @@ void commandInterpreter(uint8_t commandBytes[], float dT) {
       gaitController.setDirection(TRANSLATION_DIRECTION_BACKWARD);
       gaitController.updateGait(dT);
       // cout << "backward\n";
-    } else {
-      
     }
     
-    // Left Right
-    // if ((commandBytes[1] & KEY_LEFT_MASK) == KEY_LEFT_MASK) {
-      
-    //   // printf("A\n");
-    // } else if ((commandBytes[1] & KEY_RIGHT_MASK) == KEY_RIGHT_MASK) {
-      
-    //   // printf("D\n");
-    // } else {
-      
-    // }
+    if (hasCommand(commandBytes[1], INCREMENT_STRIDE_HEIGHT)) {
+      gaitController.incrementStrideHeight();
+    }
+    else if (hasCommand(commandBytes[1], DECREMENT_STRIDE_HEIGHT)) {
+      gaitController.decrementStrideHeight();
+    }
+    
+    if (hasCommand(commandBytes[1], INCREMENT_STRIDE_LENGTH)) {
+      gaitController.incrementStrideLength();
+    }
+    else if (hasCommand(commandBytes[1], DECREMENT_STRIDE_LENGTH)) {
+      gaitController.decrementStrideLength();
+    }
+    
+    if (hasCommand(commandBytes[1], INCREMENT_INCLINE)) {
+      gaitController.incrementIncline();
+    }
+    else if (hasCommand(commandBytes[1], DECREMENT_INCLINE)) {
+      gaitController.decrementIncline();
+    }
     
   
     servoDriverWriteCommands();

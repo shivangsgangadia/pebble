@@ -48,7 +48,7 @@ public:
     /*!
      * Here, phase angle is in radians.
      * */
-    void moveByPhase(float deltaPhaseAngle, int incline);
+    void moveByPhase(float deltaPhaseAngle, float incline);
     
     void setDirectionForward();
     void setDirectionBackward();
@@ -75,7 +75,8 @@ public:
 
 class GaitControl {
 private:
-    int speed, incline = 0, translationDirection;
+    int speed, translationDirection;
+    float incline = 0.0;
     vector<Leg> legs;
 public:
     /*!
@@ -96,6 +97,15 @@ public:
     
     void openPebble();
     void closePebble();
+    
+    void incrementStrideHeight();
+    void decrementStrideHeight();
+    
+    void incrementStrideLength();
+    void decrementStrideLength();
+    
+    void incrementIncline();
+    void decrementIncline();
 };
 
 
