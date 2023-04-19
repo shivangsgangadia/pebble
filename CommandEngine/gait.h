@@ -31,9 +31,9 @@ using namespace std;
 class Leg {
 private:
     int servoZIndex, servoXIndex;
-    int zPos, xPos, zOpenPos = 0, xOpenPos = 20, zClosedPos = 0, xClosedPos = 0;
+    int zPos, xPos, zOpenPos = 0, xOpenPos = 0, zClosedPos = 0, xClosedPos = 30;
     int currentState;
-    int strideHeight = 20, strideLength = 20, strideDirection;
+    int strideHeight = 20, strideLength = 40, strideDirection;
     float phaseAngleOffset, phaseAngle = 0;
     // These convert angles in range (-90to+90) into angles in range(0to180)
     void moveLegTo_Z(int angle);
@@ -75,8 +75,8 @@ public:
 
 class GaitControl {
 private:
-    int speed, translationDirection;
-    float incline = 0.0;
+    int translationDirection;
+    float incline = 0.0, speed;
     vector<Leg> legs;
 public:
     /*!
@@ -86,8 +86,8 @@ public:
     /*!
      * Set speed in frequency of oscillations
      * */
-    void setSpeed(int speed);
-    int getSpeed();
+    void setSpeed(float speed);
+    float getSpeed();
     /*!
      * Periodic function to be called once every game loop.
      * @param time is in seconds

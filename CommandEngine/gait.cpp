@@ -34,7 +34,7 @@ void Leg::moveLegTo_X(int angle) {
 
 void Leg::moveByPhase(float deltaPhaseAngle, float incline) {
     //this->phaseAngle += deltaPhaseAngle * this->strideDirection;
-    this->phaseAngle += deltaPhaseAngle;
+    this->phaseAngle += deltaPhaseAngle * this->strideDirection;
     float offsettedPhaseAngle = this->phaseAngle + this->phaseAngleOffset;
     // Normalize to prevent overflows
     offsettedPhaseAngle = fmodf(fmodf(offsettedPhaseAngle, TWO_PI) + TWO_PI, TWO_PI);
@@ -87,7 +87,7 @@ void Leg::closeX() {
 }
 
 void Leg::closeZ() {
-    servoPositions[this->servoZIndex] = (this->zClosedPos);
+    servoPositions[this->servoZIndex] = this->zClosedPos + this->strideLength;
 }
 
 void Leg::closeLeg() {
@@ -106,7 +106,7 @@ void Leg::openX() {
 }
 
 void Leg::openZ() {
-    servoPositions[this->servoZIndex] = this->zOpenPos;
+    servoPositions[this->servoZIndex] = this->zOpenPos + this->strideLength;
 }
 
 void Leg::openLeg() {
@@ -122,17 +122,25 @@ void Leg::openLeg() {
 
 
 GaitControl::GaitControl() {
-    for (int i = 0; i < LEG_COUNT; i++) {
-        this->legs.push_back(Leg(i, (M_PI / 8) * i));
-    }
+    this->legs.push_back(Leg(0, 0));
+    this->legs.push_back(Leg(1, M_PI));
+    this->legs.push_back(Leg(2, M_PI));
+    this->legs.push_back(Leg(3, M_PI + M_PI));
+    // for (int i = 0; i < LEG_COUNT; i++) {
+        // this->legs.push_back(Leg(i, (M_PI / 2) * i));
+	// this->legs[i].disableLeg();
+    // }
+    // this->legs[0].enableLeg();
+    this->legs[2].setDirectionBackward();
+    this->legs[3].setDirectionBackward();
     this->setDirection(TRANSLATION_DIRECTION_FORWARD);
 }
 
-void GaitControl::setSpeed(int speed) {
+void GaitControl::setSpeed(float speed) {
     this->speed = speed;
 }
 
-int GaitControl::getSpeed() {
+float GaitControl::getSpeed() {
     return this->speed;
 }
 
