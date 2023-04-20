@@ -19,7 +19,7 @@ uint32_t _oscillator_freq = FREQUENCY_OSCILLATOR;
  */
 int servoDriverInit(uint8_t prescale) {
   // Init servo position array
-  servoPositions = new char[SERVO_COUNT];
+  servoPositions = new char[SERVO_COUNT];   // +1 for camera
   for (int i = 0; i < SERVO_COUNT; i++) {
 	  servoPositions[i] = 1;
   }
@@ -198,7 +198,7 @@ void setPWM(uint8_t num, uint16_t on, uint16_t off) {
 }
 
 void servoDriverWriteCommands() {
-  int bytesToWrite = (SERVO_COUNT * 4) + 1;
+  int bytesToWrite = ((SERVO_COUNT) * 4) + 1;   // +1 for camera
   char toWrite[bytesToWrite];
   toWrite[0] = PCA9685_LED0_ON_L;
   

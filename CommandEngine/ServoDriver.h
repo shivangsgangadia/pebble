@@ -54,7 +54,7 @@
 
 #define MOTOR_MAX_SPEED 255
 #define SERVO_MAX_ANGLE 180
-#define SERVO_COUNT 8
+#define SERVO_COUNT 9
 
 // This is for the writing to controller part. Users should not modify directly.
 extern char *servoPositions;

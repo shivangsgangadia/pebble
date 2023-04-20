@@ -28,6 +28,7 @@ using namespace std;
 void commandInterpreter(uint8_t[], float);
 clock_t timer;
 GaitControl gaitController;
+CameraServo cameraServo;
 bool keepRunning;
 
 void ctrl_c_handler(int signum) {
@@ -138,25 +139,44 @@ bool hasCommand(uint8_t commandByte, uint8_t mask) {
 void commandInterpreter(uint8_t commandBytes[], float dT) {
 
   //cout << "intr_str\n";
+  if (hasCommand(commandBytes[0], CAMERA_TURN_LEFT)) {
+    cameraServo.stepLeft();
+  } else if (hasCommand(commandBytes[0], CAMERA_TURN_RIGHT)) {
+    cameraServo.stepRight();
+  }
   
   if (hasCommand(commandBytes[1], OPEN_PEBBLE)) {
     gaitController.openPebble();
+    gaitController.setGaitState(GAIT_STATE_STOP);
     cout << "Open\n";
   }
   else if (hasCommand(commandBytes[1], CLOSE_PEBBLE)) {
     gaitController.closePebble();
+    gaitController.setGaitState(GAIT_STATE_STOP);
     cout << "Close\n";
   }
-  else {
+  else if (hasCommand(commandBytes[1], MOVE_PEBBLE)) {
+    gaitController.setGaitState(GAIT_STATE_MOVE);
     // Up down
     if (hasCommand(commandBytes[0], TRANSLATE_FORWARD)) {
       gaitController.setDirection(TRANSLATION_DIRECTION_FORWARD);
-      gaitController.updateGait(dT);
+      gaitController.accelerate();
       // cout << "forward\n";
     } else if (hasCommand(commandBytes[0], TRANSLATE_BACKWARD)) {
       gaitController.setDirection(TRANSLATION_DIRECTION_BACKWARD);
-      gaitController.updateGait(dT);
+      gaitController.accelerate();
       // cout << "backward\n";
+    } else {
+      gaitController.decelerate();
+    }
+    
+    if (hasCommand(commandBytes[0], TRANSLATE_WITH_LEFT)) {
+      gaitController.setTurnDirection(TURN_DIRECTION_LEFT);
+    } else if (hasCommand(commandBytes[0], TRANSLATE_WITH_RIGHT)) {
+      gaitController.setTurnDirection(TURN_DIRECTION_RIGHT);
+    }
+    else {
+      gaitController.setTurnDirection(TURN_DIRECTION_NONE);
     }
     
     if (hasCommand(commandBytes[1], INCREMENT_STRIDE_HEIGHT)) {
@@ -179,6 +199,8 @@ void commandInterpreter(uint8_t commandBytes[], float dT) {
     else if (hasCommand(commandBytes[1], DECREMENT_INCLINE)) {
       gaitController.decrementIncline();
     }
+    
+    gaitController.updateGait(dT);
     
   
     servoDriverWriteCommands();
