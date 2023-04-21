@@ -10,9 +10,9 @@ using namespace std;
 char *servoPositions;
 
 CameraServo::CameraServo() {
-    this->servoIndex = SERVO_COUNT * 2;
+    this->servoIndex = SERVO_COUNT - 1;
     this->servoPos = 0;
-    servoPositions[this->servoIndex] = (uint8_t) (this->servoPos + this->servoPosMax);
+    // servoPositions[this->servoIndex] = (uint8_t) (this->servoPos + this->servoPosMax);
 }
 
 void CameraServo::stepLeft() {
@@ -60,7 +60,7 @@ void Leg::moveByPhase(float deltaPhaseAngle, float incline) {
     // cout << "Phase angle for leg: " << offsettedPhaseAngle << '\n';
     // Convert to degrees
     int zPos = this->currentStrideLength * cos(offsettedPhaseAngle);
-    int xPos = this->maxStrideHeight * sin(offsettedPhaseAngle + ((M_PI / 4) * incline));
+    int xPos = this->currentStrideHeight * sin(offsettedPhaseAngle + ((M_PI / 4) * incline));
     this->moveLegTo_Z(zPos);
     this->moveLegTo_X(xPos);
 }
@@ -141,16 +141,22 @@ void Leg::openLeg() {
 
 void Leg::accelerateStrideLength(float maxStrideLength) {
     this->currentStrideLength += LEG_ACCELERATION_FACTOR * (maxStrideLength - this->currentStrideLength);
-    if ((maxStrideLength - this->currentStrideLength) * this->strideDirection < 0.0f) {
-        this->currentStrideLength = maxStrideLength * this->strideDirection;
-    }
 }
 
 void Leg::decelerateStrideLength() {
     this->currentStrideLength += LEG_ACCELERATION_FACTOR * (0 - this->currentStrideLength);
     if ((0 - this->currentStrideLength) * this->strideDirection < 0.0f) {
-        this->currentStrideLength = 0;
+        //this->currentStrideLength = 0;
     }
+}
+
+
+void Leg::accelerateStrideHeight(float maxStrideHeight) {
+	this->currentStrideHeight += LEG_ACCELERATION_FACTOR * (maxStrideHeight - this->currentStrideHeight);
+}
+
+void Leg::decelerateStrideHeight() {
+	this->currentStrideHeight += LEG_ACCELERATION_FACTOR * (0 - this->currentStrideHeight);
 }
 
 
@@ -172,6 +178,10 @@ GaitControl::GaitControl() {
 
 void GaitControl::setGaitState(int state) {
     this->state = state;
+}
+
+int GaitControl::getGaitState() {
+	return this->state;
 }
 
 void GaitControl::setSpeed(float speed) {
@@ -199,6 +209,7 @@ void GaitControl::accelerate() {
     if (this->turnDirection == TURN_DIRECTION_NONE) {
         for (int i = 0; i < LEG_COUNT; i++) {
             this->legs[i].accelerateStrideLength(this->legs[i].getStrideLength());
+	    this->legs[i].accelerateStrideHeight(this->legs[i].getStrideHeight());
         }
     }
     else if (this->turnDirection == TURN_DIRECTION_LEFT) {
@@ -206,18 +217,29 @@ void GaitControl::accelerate() {
         this->legs[1].accelerateStrideLength(this->legs[1].getStrideLength() / 2);
         this->legs[2].accelerateStrideLength(this->legs[2].getStrideLength());
         this->legs[3].accelerateStrideLength(this->legs[3].getStrideLength());
+        this->legs[0].accelerateStrideHeight(this->legs[0].getStrideHeight());
+        this->legs[1].accelerateStrideHeight(this->legs[1].getStrideHeight());
+        this->legs[2].accelerateStrideHeight(this->legs[2].getStrideHeight());
+        this->legs[3].accelerateStrideHeight(this->legs[3].getStrideHeight());
+
     }
     else if (this->turnDirection == TURN_DIRECTION_RIGHT) {
         this->legs[0].accelerateStrideLength(this->legs[0].getStrideLength());
         this->legs[1].accelerateStrideLength(this->legs[1].getStrideLength());
         this->legs[2].accelerateStrideLength(this->legs[2].getStrideLength() / 2);
         this->legs[3].accelerateStrideLength(this->legs[3].getStrideLength() / 2);
+	this->legs[0].accelerateStrideHeight(this->legs[0].getStrideHeight());
+        this->legs[1].accelerateStrideHeight(this->legs[1].getStrideHeight());
+        this->legs[2].accelerateStrideHeight(this->legs[2].getStrideHeight());
+        this->legs[3].accelerateStrideHeight(this->legs[3].getStrideHeight());
+
     }
 }
 
 void GaitControl::decelerate() {
     for (int i = 0; i < LEG_COUNT; i++) {
         this->legs[i].decelerateStrideLength();
+	this->legs[i].decelerateStrideHeight();
     }
 }
 
@@ -293,4 +315,8 @@ void GaitControl::decrementIncline() {
     for (int i = 0; i < LEG_COUNT; i++) {
         this->incline -= 0.1;
     }
+}
+
+void GaitControl::setTurnDirection(int dir) {
+	this->turnDirection = dir;
 }

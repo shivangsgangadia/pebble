@@ -81,6 +81,9 @@ public:
     
     void accelerateStrideLength(float maxStrideLength);
     void decelerateStrideLength();
+
+    void accelerateStrideHeight(float maxStrideHeight);
+    void decelerateStrideHeight();
     
     void closeX();
     void closeZ();
@@ -103,6 +106,7 @@ public:
      * */
     GaitControl();
     void setGaitState(int state);
+    int getGaitState();
     /*!
      * Set speed in frequency of oscillations
      * */

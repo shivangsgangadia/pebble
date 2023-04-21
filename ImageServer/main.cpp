@@ -261,7 +261,7 @@ int main() {
     receivedBytesCount = recv(connectedSocketFileDescriptor, requestBuffer.data(), requestBuffer.size(), 0);
 
     if (receivedBytesCount > 0) {
-      printf("serv req\n");
+      //printf("serv req\n");
 
       switch (requestBuffer[0]) {
       case 'I': {

@@ -130,7 +130,17 @@ int main() {
 }
 
 bool hasCommand(uint8_t commandByte, uint8_t mask) {
-  return ((commandByte & mask) == mask);
+  if (commandByte >> 6 == 0b11) {
+	  if (mask == MOVE_PEBBLE) {
+		  return true;
+	  }
+	  else {
+		  return false;
+	  }
+  }
+  else {
+	  return ((commandByte & mask) == mask);
+  }
 }
 
 /**
@@ -141,8 +151,10 @@ void commandInterpreter(uint8_t commandBytes[], float dT) {
   //cout << "intr_str\n";
   if (hasCommand(commandBytes[0], CAMERA_TURN_LEFT)) {
     cameraServo.stepLeft();
+    servoDriverWriteCommands();
   } else if (hasCommand(commandBytes[0], CAMERA_TURN_RIGHT)) {
     cameraServo.stepRight();
+    servoDriverWriteCommands();
   }
   
   if (hasCommand(commandBytes[1], OPEN_PEBBLE)) {
@@ -156,7 +168,11 @@ void commandInterpreter(uint8_t commandBytes[], float dT) {
     cout << "Close\n";
   }
   else if (hasCommand(commandBytes[1], MOVE_PEBBLE)) {
+    cout << "Move\n";
     gaitController.setGaitState(GAIT_STATE_MOVE);
+  }
+
+  if (gaitController.getGaitState() == GAIT_STATE_MOVE) {
     // Up down
     if (hasCommand(commandBytes[0], TRANSLATE_FORWARD)) {
       gaitController.setDirection(TRANSLATION_DIRECTION_FORWARD);
