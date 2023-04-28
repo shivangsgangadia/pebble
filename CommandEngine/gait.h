@@ -49,7 +49,7 @@ public:
 class Leg {
 private:
     int servoZIndex, servoXIndex;
-    int zPos, xPos, zOpenPos = 0, xOpenPos = 0, zClosedPos = 0, xClosedPos = 30;
+    int zPos, xPos, zOpenPos = 0, xOpenPos = 5, zClosedPos = 0, xClosedPos = 0;
     int currentState, strideDirection;
     float maxStrideHeight = 20, maxStrideLength = 40, currentStrideHeight=0.0f, currentStrideLength=0.0f;
     float phaseAngleOffset, phaseAngle = 0.0f;

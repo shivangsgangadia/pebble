@@ -121,7 +121,7 @@ void Leg::closeLeg() {
 }
 
 void Leg::openX() {
-    servoPositions[this->servoXIndex] = (this->xOpenPos);
+    servoPositions[this->servoXIndex] = (this->xOpenPos + this->maxStrideHeight);
 }
 
 void Leg::openZ() {
@@ -145,9 +145,6 @@ void Leg::accelerateStrideLength(float maxStrideLength) {
 
 void Leg::decelerateStrideLength() {
     this->currentStrideLength += LEG_ACCELERATION_FACTOR * (0 - this->currentStrideLength);
-    if ((0 - this->currentStrideLength) * this->strideDirection < 0.0f) {
-        //this->currentStrideLength = 0;
-    }
 }
 
 
