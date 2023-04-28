@@ -228,11 +228,33 @@ void GaitControl::accelerate() {
         this->legs[1].accelerateStrideLength(this->legs[1].getStrideLength());
         this->legs[2].accelerateStrideLength(this->legs[2].getStrideLength() / 2);
         this->legs[3].accelerateStrideLength(this->legs[3].getStrideLength() / 2);
-	this->legs[0].accelerateStrideHeight(this->legs[0].getStrideHeight());
+        this->legs[0].accelerateStrideHeight(this->legs[0].getStrideHeight());
         this->legs[1].accelerateStrideHeight(this->legs[1].getStrideHeight());
         this->legs[2].accelerateStrideHeight(this->legs[2].getStrideHeight());
         this->legs[3].accelerateStrideHeight(this->legs[3].getStrideHeight());
 
+    }
+    else if (this->turnDirection == TURN_DIRECTION_IN_PLACE_LEFT) {
+        this->legs[0].accelerateStrideLength(-this->legs[0].getStrideLength());
+        this->legs[1].accelerateStrideLength(-this->legs[1].getStrideLength());
+        this->legs[2].accelerateStrideLength(this->legs[2].getStrideLength());
+        this->legs[3].accelerateStrideLength(this->legs[3].getStrideLength());
+        this->legs[0].accelerateStrideHeight(this->legs[0].getStrideHeight());
+        this->legs[1].accelerateStrideHeight(this->legs[1].getStrideHeight());
+        this->legs[2].accelerateStrideHeight(this->legs[2].getStrideHeight());
+        this->legs[3].accelerateStrideHeight(this->legs[3].getStrideHeight());
+    
+    }
+    else if (this->turnDirection == TURN_DIRECTION_IN_PLACE_RIGHT) {
+        this->legs[0].accelerateStrideLength(this->legs[0].getStrideLength());
+        this->legs[1].accelerateStrideLength(this->legs[1].getStrideLength());
+        this->legs[2].accelerateStrideLength(-this->legs[2].getStrideLength());
+        this->legs[3].accelerateStrideLength(-this->legs[3].getStrideLength());
+        this->legs[0].accelerateStrideHeight(this->legs[0].getStrideHeight());
+        this->legs[1].accelerateStrideHeight(this->legs[1].getStrideHeight());
+        this->legs[2].accelerateStrideHeight(this->legs[2].getStrideHeight());
+        this->legs[3].accelerateStrideHeight(this->legs[3].getStrideHeight());
+    
     }
 }
 

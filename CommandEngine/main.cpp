@@ -186,12 +186,16 @@ void commandInterpreter(uint8_t commandBytes[], float dT) {
       gaitController.decelerate();
     }
     
+    // To turn or not to turn
     if (hasCommand(commandBytes[0], TRANSLATE_WITH_LEFT)) {
       gaitController.setTurnDirection(TURN_DIRECTION_LEFT);
     } else if (hasCommand(commandBytes[0], TRANSLATE_WITH_RIGHT)) {
       gaitController.setTurnDirection(TURN_DIRECTION_RIGHT);
-    }
-    else {
+    } else if (hasCommand(commandBytes[0], TURN_DIRECTION_IN_PLACE_LEFT)) {
+      gaitController.setTurnDirection(TURN_DIRECTION_IN_PLACE_LEFT);
+    } else if (hasCommand(commandBytes[0], TURN_DIRECTION_IN_PLACE_RIGHT)) {
+      gaitController.setTurnDirection(TURN_DIRECTION_IN_PLACE_RIGHT);
+    } else {
       gaitController.setTurnDirection(TURN_DIRECTION_NONE);
     }
     
