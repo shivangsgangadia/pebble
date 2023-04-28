@@ -182,6 +182,12 @@ void commandInterpreter(uint8_t commandBytes[], float dT) {
       gaitController.setDirection(TRANSLATION_DIRECTION_BACKWARD);
       gaitController.accelerate();
       // cout << "backward\n";
+    } else if (hasCommand(commandBytes[0], TURN_IN_PLACE_LEFT)) {
+      gaitController.setTurnDirection(TURN_DIRECTION_IN_PLACE_LEFT);
+      gaitController.accelerate();
+    } else if (hasCommand(commandBytes[0], TURN_IN_PLACE_RIGHT)) {
+      gaitController.setTurnDirection(TURN_DIRECTION_IN_PLACE_RIGHT);
+      gaitController.accelerate();
     } else {
       gaitController.decelerate();
     }
@@ -191,10 +197,6 @@ void commandInterpreter(uint8_t commandBytes[], float dT) {
       gaitController.setTurnDirection(TURN_DIRECTION_LEFT);
     } else if (hasCommand(commandBytes[0], TRANSLATE_WITH_RIGHT)) {
       gaitController.setTurnDirection(TURN_DIRECTION_RIGHT);
-    } else if (hasCommand(commandBytes[0], TURN_DIRECTION_IN_PLACE_LEFT)) {
-      gaitController.setTurnDirection(TURN_DIRECTION_IN_PLACE_LEFT);
-    } else if (hasCommand(commandBytes[0], TURN_DIRECTION_IN_PLACE_RIGHT)) {
-      gaitController.setTurnDirection(TURN_DIRECTION_IN_PLACE_RIGHT);
     } else {
       gaitController.setTurnDirection(TURN_DIRECTION_NONE);
     }
